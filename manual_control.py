@@ -509,19 +509,25 @@ class World(object):
         self.show_vehicle_telemetry = False
         self.doors_are_open = False
         self.current_map_layer = 0
-        self.map_layer_names = [
-            carla.MapLayer.NONE,
-            carla.MapLayer.Buildings,
-            carla.MapLayer.Decals,
-            carla.MapLayer.Foliage,
-            carla.MapLayer.Ground,
-            carla.MapLayer.ParkedVehicles,
-            carla.MapLayer.Particles,
-            carla.MapLayer.Props,
-            carla.MapLayer.StreetLights,
-            carla.MapLayer.Walls,
-            carla.MapLayer.All
-        ]
+        # MapLayer may not be available in CARLA 0.9.10.1, wrapped in try/except
+        try:
+            self.map_layer_names = [
+                carla.MapLayer.NONE,
+                carla.MapLayer.Buildings,
+                carla.MapLayer.Decals,
+                carla.MapLayer.Foliage,
+                carla.MapLayer.Ground,
+                carla.MapLayer.ParkedVehicles,
+                carla.MapLayer.Particles,
+                carla.MapLayer.Props,
+                carla.MapLayer.StreetLights,
+                carla.MapLayer.Walls,
+                carla.MapLayer.All
+            ]
+        except AttributeError:
+            # MapLayer not available in CARLA 0.9.10.1
+            self.map_layer_names = []
+            print("Warning: MapLayer not available in this CARLA version")
 
     def restart(self):
         self.player_max_speed = 1.589
@@ -583,12 +589,16 @@ class World(object):
         self.player.get_world().set_weather(preset[0])
 
     def next_map_layer(self, reverse=False):
+        if not self.map_layer_names:
+            return  # MapLayer not available in CARLA 0.9.10.1
         self.current_map_layer += -1 if reverse else 1
         self.current_map_layer %= len(self.map_layer_names)
         selected = self.map_layer_names[self.current_map_layer]
         self.hud.notification('LayerMap selected: %s' % selected)
 
     def load_map_layer(self, unload=False):
+        if not self.map_layer_names:
+            return  # MapLayer not available in CARLA 0.9.10.1
         selected = self.map_layer_names[self.current_map_layer]
         if unload:
             self.hud.notification('Unloading map layer: %s' % selected)

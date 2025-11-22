@@ -1,0 +1,35 @@
+# PointPillars Requirements Compatible with ME455_TeamC Environment
+# Python 3.7.13 | PyTorch 1.11.0 | CARLA 0.9.10.1
+#
+# IMPORTANT: DO NOT install this file if you're using ME455_TeamC conda environment!
+# The ME455_TeamC environment already has all these packages installed.
+# This file is for reference only or for standalone installations.
+
+# Core dependencies (already in ME455_TeamC)
+numpy==1.18.1
+pandas==0.25.3
+torch==1.11.0
+torchvision==0.12.0
+tqdm==4.43.0
+opencv-python==4.2.0.32
+matplotlib==3.0.3
+jsonschema==3.2.0
+
+# Additional dependency needed for Waymo dataset preprocessing
+pyarrow==6.0.1
+
+# Standard library modules (no installation needed)
+# - pickle
+# - json
+# - os
+# - sys
+
+# CARLA Python API
+# Install from CARLA 0.9.10.1 distribution:
+# The CARLA Python API is located in:
+#   <CARLA_ROOT>/PythonAPI/carla/dist/carla-0.9.10-py3.7-linux-x86_64.egg
+# Add to PYTHONPATH or install with:
+#   easy_install <path_to_egg_file>
+
+# Optional: pygame (already in ME455_TeamC)
+pygame==2.0.1

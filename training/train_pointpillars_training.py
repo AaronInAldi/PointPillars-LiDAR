@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-from torch.amp import GradScaler, autocast
+from torch.cuda.amp import GradScaler, autocast  # Modified for PyTorch 1.11.0 compatibility
 
 class PointPillars(nn.Module):
     def __init__(self):
@@ -52,14 +52,14 @@ def create_data_loader(file_path, batch_size=1):
 def train_model(model, data_loader, criterion, optimizer, num_epochs=25, save_path='model.pth', save_interval=5):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
-    scaler = GradScaler('cuda')  # AMPのためのスケーラーを作成
+    scaler = GradScaler()  # AMPのためのスケーラーを作成 (Modified for PyTorch 1.11.0)
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(tqdm(data_loader, desc=f"Epoch {epoch+1}/{num_epochs}")):
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
-            with autocast('cuda'):  # AMPを使用
+            with autocast():  # AMPを使用 (Modified for PyTorch 1.11.0)
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
             scaler.scale(loss).backward()
